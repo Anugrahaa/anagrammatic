@@ -20,6 +20,7 @@ class ViewScreen(object):
 		self.anagrammatic = Anagrammattic()
 		self.clear = pygame.image.load("./images/backspace.png")
 		self.clearrect = self.clear.get_rect()
+		self.hintrect = self.clear.get_rect()
 
 	def firstScreen(self):
 		self.screen.fill(black)
@@ -39,10 +40,10 @@ class ViewScreen(object):
 		self.screen.blit(text, (250,200))
 		pygame.display.flip()
 		return text1
+
 	def displayText(self,player,jumbledword, totalscore):
 		i=0		
 		while i<len(jumbledword):
-			# self.text[i] = self.font.render(jumbledword[i], True, white, black)
 			text = "./letters/"+jumbledword[i].upper()+".png"
 			self.text[i] = pygame.image.load(text)
 			self.text[i] = pygame.transform.scale(self.text[i], (75,75))
@@ -67,18 +68,18 @@ class ViewScreen(object):
 		self.clearrect.y = 250
 		self.screen.blit(self.clear,self.clearrect)
 
-		# tick = pygame.image.load("./images/tick.png")
-		# tick = pygame.transform.scale(tick, (100,50))
-		# tickrect = tick.get_rect()
-		# tickrect.x = 150
-		# tickrect.y = 350
-		# self.screen.blit(tick,tickrect)
-
 		score = self.scorefont.render(totalscore, True, white, black)
 		scorerect = score.get_rect()
 		scorerect.x = 150+(85*3)
 		scorerect.y = 25
 		self.screen.blit(score, scorerect)
+
+		hint = pygame.image.load("./images/hint.png")
+		hint = pygame.transform.scale(hint,(50,50))
+		self.hintrect = hint.get_rect()
+		self.hintrect.x = 250
+		self.hintrect.y = 350
+		self.screen.blit(hint, self.hintrect)
 
 		player = "Welcome " + player
 		player = self.scorefont.render(player, True, white, black)
@@ -98,7 +99,6 @@ class ViewScreen(object):
 			clearsurfaceRect.y = 250
 			self.screen.blit(clearsurface, clearsurfaceRect)
 			newtext = "./letters/"+text[i].upper()+".png"
-			# letter = self.font.render(text[i], True, white, black)
 			letter = pygame.image.load(newtext)
 			letter = pygame.transform.scale(letter, (65,65))
 			letterrect = letter.get_rect()
@@ -117,7 +117,6 @@ class ViewScreen(object):
 		pygame.display.flip()
 
 	def clearScreen(self, player, jumbledword, tick, totalscore):
-		# self.screen.fill(black)
 		if tick!=0:
 			image = "./images/right.png"
 		else:
@@ -132,6 +131,19 @@ class ViewScreen(object):
 		pygame.time.wait(1000)
 		self.screen.fill(black)
 		self.displayText(player, jumbledword, totalscore)
+
+	def displayHint(self,hintword):
+		clearsurface = pygame.Surface((100,40))
+		clearsurface.fill(black)
+		clearsurfaceRect = clearsurface.get_rect()
+		clearsurfaceRect.x = 100
+		clearsurfaceRect.y = 420
+		self.screen.blit(clearsurface,clearsurfaceRect)
+
+		hintword = "Hint: "+hintword
+		hintword = self.scorefont.render(hintword, True, white, black)
+		self.screen.blit(hintword, (100,420))
+		pygame.display.flip()
 
 	def detectMouseClick(self, text, i, jumbledword, pos,checkword):
 		j=0
@@ -150,6 +162,8 @@ class ViewScreen(object):
 					j+=1
 		if self.clearrect.collidepoint(pos):
 			return -1
+		if self.hintrect.collidepoint(pos):
+			return -2
 		return False
 
 	def printScore(self, scoretext, levelup):

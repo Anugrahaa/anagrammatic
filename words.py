@@ -43,13 +43,19 @@ class Anagrammattic(object):
 				j+=1
 			if(flag==False):
 				return False
+		# while i<len(word):
+		# 	if word[i] not in rightword:
+		# 		return False
 			i+=1
 		return True
 
 	def checkcorrectness(self,word):
 		score = 0
 		word = word.replace(" ","")
-		x = self.d.check(word)
+		if(len(word)):
+			x = self.d.check(word)
+		else:
+			return 0
 		if x==True:
 			if word not in self.listOfWords:
 				i=0
@@ -60,5 +66,14 @@ class Anagrammattic(object):
 			self.listOfWords[self.noOfWords] = word
 			self.noOfWords+=1
 		return score
+
+	def gethint(self, hintno):
+		if hintno == 1:
+			return "_ _ "+self.WORD[2]+" _ _"
+		elif hintno == 2:
+			return "_ _ "+self.WORD[2]+" "+self.WORD[3]+" _"
+		else:
+			return self.WORD[0]+" _ "+self.WORD[2]+" "+self.WORD[3]+" _ :"+"No more hints!"
+
 
 

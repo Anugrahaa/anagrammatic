@@ -55,6 +55,7 @@ def main(player):
 	minutes = 0
 	seconds = 0
 	milliseconds = 0
+	hint_no = 0
 	while chk and not quitevent:
 		for event in pygame.event.get():
 			if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 or event.type == pygame.QUIT:
@@ -64,16 +65,29 @@ def main(player):
 					pos = pygame.mouse.get_pos()
 					value = gameScreen.detectMouseClick(enteredWord,i,jumbledword,pos,anagrammattic.checkword)
 					if value!=False:
-						if value!=-1:
+						if value!=-1 and value!=-2:
 							enteredWord = value
 							i+=1
 						else:
-							if i!=0:
-								i-=1
-								enteredWord = enteredWord.replace(enteredWord[i]," ",1)
-								totalscoretext = "Total Score: "+str(totalscore)
-								gameScreen.displayText(player,jumbledword,totalscoretext)
-								gameScreen.displayAnsText(enteredWord)
+							if value == -1:
+								if i!=0:
+									i-=1
+									enteredWord = enteredWord.replace(enteredWord[i]," ",1)
+									totalscoretext = "Total Score: "+str(totalscore)
+									gameScreen.displayText(player,jumbledword,totalscoretext)
+									gameScreen.displayAnsText(enteredWord)
+
+							else:
+								if hint_no<3 and totalscore>=10:
+									hint_no+=1
+									hintword = anagrammattic.gethint(hint_no)
+									totalscore-=10 
+									overallscore-=10
+									totalscoretext = "Score: "+str(totalscore)
+									gameScreen.clearScreen(player,jumbledword,score, totalscoretext)
+									gameScreen.displayHint(hintword)
+
+
 
 			if event.type == pygame.KEYDOWN:
 				if pygame.key.name(event.key)!='backspace':
@@ -92,7 +106,8 @@ def main(player):
 						score = anagrammattic.checkcorrectness(enteredWord)
 						totalscore+=score
 						totalscoretext = "Score: "+str(totalscore)
-						overallscoretext = "Total Score: "+str(overallscore+score)
+						overallscore=overallscore+score
+						overallscoretext = "Total Score: "+str(overallscore)
 						gameScreen.clearScreen(player,jumbledword,score, totalscoretext)
 						i=0
 						if len(enteredWord.replace(" ",""))==5 and score:
@@ -125,8 +140,8 @@ def main(player):
 
 
 	if levelup and not quitevent:
-		main()
+		main(player)
 	else:
 		return
-# main()
+
 first_screen()
