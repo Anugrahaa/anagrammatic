@@ -69,7 +69,7 @@ def main():
 					if i>0:
 						i-=1
 						enteredWord = enteredWord.replace(enteredWord[i], " ", 1)
-						gameScreen.displayText(jumbledword)
+						gameScreen.displayText(jumbledword,totalscoretext)
 						gameScreen.displayAnsText(enteredWord)
 
 
