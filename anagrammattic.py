@@ -8,8 +8,30 @@ from display import ViewScreen
 overallscore=0
 
 def first_screen():
-	print("")
-def main():
+	gameScreen = ViewScreen()
+	chk = True
+	name=[]
+	gameScreen.firstScreen()
+	while chk:
+		for event in pygame.event.get():
+			if event.type == pygame.KEYDOWN:
+				x = pygame.key.name(event.key)
+				if x not in ['backspace', 'return'] and len(x)==1:
+					name+=x
+					player = gameScreen.playerName(name)
+				if x=='backspace' and name:
+					name.pop()
+					player = gameScreen.playerName(name)
+
+				if x=='return':
+					main(player)
+					chk=False
+			if event.type == pygame.QUIT:
+				chk = False
+	pygame.quit()
+	sys.exit()
+
+def main(player):
 	levelup=False
 	d = enchant.Dict("en_US")
 	anagrammattic = Anagrammattic()
@@ -23,7 +45,7 @@ def main():
 	totalscore = 0
 	global overallscore
 	totalscoretext = "Total Score: "+ str(totalscore)
-	b = gameScreen.displayText(jumbledword, totalscoretext)
+	b = gameScreen.displayText(player,jumbledword, totalscoretext)
 	pygame.time.wait(1000)
 	chk = True
 	quitevent = False
@@ -50,27 +72,28 @@ def main():
 								i-=1
 								enteredWord = enteredWord.replace(enteredWord[i]," ",1)
 								totalscoretext = "Total Score: "+str(totalscore)
-								gameScreen.displayText(jumbledword,totalscoretext)
+								gameScreen.displayText(player,jumbledword,totalscoretext)
 								gameScreen.displayAnsText(enteredWord)
 
 			if event.type == pygame.KEYDOWN:
 				if pygame.key.name(event.key)!='backspace':
 					if pygame.key.name(event.key)!='return':
-						if i<len(word):
-							enteredWord = enteredWord.replace(enteredWord[i], pygame.key.name(event.key), 1)
-							value = anagrammattic.checkword(enteredWord)
-							if value == True:
-								gameScreen.displayAnsText(enteredWord)
-								i+=1
-								
-							else:
-								enteredWord = enteredWord.replace(enteredWord[i], " ", 1)
+						if len(pygame.key.name(event.key))==1:
+							if i<len(word):
+								enteredWord = enteredWord.replace(enteredWord[i], pygame.key.name(event.key), 1)
+								value = anagrammattic.checkword(enteredWord)
+								if value == True:
+									gameScreen.displayAnsText(enteredWord)
+									i+=1
+									
+								else:
+									enteredWord = enteredWord.replace(enteredWord[i], " ", 1)
 					else:
 						score = anagrammattic.checkcorrectness(enteredWord)
 						totalscore+=score
 						totalscoretext = "Score: "+str(totalscore)
 						overallscoretext = "Total Score: "+str(overallscore+score)
-						gameScreen.clearScreen(jumbledword,score, totalscoretext,overallscoretext)
+						gameScreen.clearScreen(player,jumbledword,score, totalscoretext)
 						i=0
 						if len(enteredWord.replace(" ",""))==5 and score:
 							print(enteredWord)
@@ -81,7 +104,7 @@ def main():
 					if i>0:
 						i-=1
 						enteredWord = enteredWord.replace(enteredWord[i], " ", 1)
-						gameScreen.displayText(jumbledword,totalscoretext)
+						gameScreen.displayText(player,jumbledword,totalscoretext)
 						gameScreen.displayAnsText(enteredWord)
 
 
@@ -104,6 +127,6 @@ def main():
 	if levelup and not quitevent:
 		main()
 	else:
-		pygame.quit()
-		sys.exit
-main()
+		return
+# main()
+first_screen()

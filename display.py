@@ -4,6 +4,7 @@ import random
 import time
 import enchant
 from words import Anagrammattic
+# import inputbox
 black = 0,0,0
 white = 255,255,255
 class ViewScreen(object):
@@ -20,7 +21,25 @@ class ViewScreen(object):
 		self.clear = pygame.image.load("./images/backspace.png")
 		self.clearrect = self.clear.get_rect()
 
-	def displayText(self,jumbledword, totalscore):
+	def firstScreen(self):
+		self.screen.fill(black)
+		text = "Enter your name: "
+		text = self.scorefont.render(text, True, white, black)
+		textrect = text.get_rect()
+		textrect.x = 20
+		textrect.y = 200
+		self.screen.blit(text, textrect)
+		pygame.display.flip()
+
+	def playerName(self,name):
+		self.screen.fill(black)
+		self.firstScreen()
+		text1 = ''.join(name)
+		text = self.scorefont.render(text1, True, white, black)
+		self.screen.blit(text, (250,200))
+		pygame.display.flip()
+		return text1
+	def displayText(self,player,jumbledword, totalscore):
 		i=0		
 		while i<len(jumbledword):
 			# self.text[i] = self.font.render(jumbledword[i], True, white, black)
@@ -61,6 +80,10 @@ class ViewScreen(object):
 		scorerect.y = 25
 		self.screen.blit(score, scorerect)
 
+		player = "Welcome " + player
+		player = self.scorefont.render(player, True, white, black)
+		self.screen.blit(player, (15,25))
+
 		pygame.display.flip()
 		return self.screen.blit(self.text[0], self.textrect[0])
 
@@ -93,7 +116,7 @@ class ViewScreen(object):
 		self.screen.blit(time, timerect)
 		pygame.display.flip()
 
-	def clearScreen(self, jumbledword, tick, totalscore):
+	def clearScreen(self, player, jumbledword, tick, totalscore):
 		# self.screen.fill(black)
 		if tick!=0:
 			image = "./images/right.png"
@@ -108,7 +131,7 @@ class ViewScreen(object):
 		pygame.display.flip()
 		pygame.time.wait(1000)
 		self.screen.fill(black)
-		self.displayText(jumbledword, totalscore)
+		self.displayText(player, jumbledword, totalscore)
 
 	def detectMouseClick(self, text, i, jumbledword, pos,checkword):
 		j=0
