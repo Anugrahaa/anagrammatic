@@ -13,7 +13,7 @@ class Anagrammattic(object):
 		self.score = {"A":1, "B":3, "C":3, "D":2, "E":1, "F":4, "G":2, "H":4, "I":1, "J":8, "K":5, "L":1, "M":3, "N":1, "O":1, "P":3, "Q":10, "R":1, "S":1, "T":1, "U":1, "V":4, "W":4, "X":8, "Y":4, "Z":1}
 		self.listOfWords = []
 		self.noOfWords = 0
-		for i in range(30):
+		for i in range(50):
 			self.listOfWords.append("xxxxx")
 
 	def getRandomFiveLetterWord(self,e):
@@ -30,9 +30,18 @@ class Anagrammattic(object):
 		rightword = self.WORD
 		i=0
 		word = word.replace(" ","")
-		print(word)
 		while i<len(word):
-			if word[i] not in rightword:
+			j=0
+			flag=False
+			while j<len(rightword)-i:
+				if(word[i]==rightword[j]):
+					rightword = rightword.replace(rightword[j], rightword[len(rightword)-i-1],1)
+					flag=True
+					break
+				else:
+					flag=False
+				j+=1
+			if(flag==False):
 				return False
 			i+=1
 		return True
@@ -49,6 +58,7 @@ class Anagrammattic(object):
 					i+=1
 		if score!=0:
 			self.listOfWords[self.noOfWords] = word
+			self.noOfWords+=1
 		return score
 
 

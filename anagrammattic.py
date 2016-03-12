@@ -5,8 +5,12 @@ import time
 import enchant
 from words import Anagrammattic
 from display import ViewScreen
+overallscore=0
 
+def first_screen():
+	print("")
 def main():
+	levelup=False
 	d = enchant.Dict("en_US")
 	anagrammattic = Anagrammattic()
 
@@ -17,21 +21,23 @@ def main():
 
 	gameScreen = ViewScreen()
 	totalscore = 0
+	global overallscore
 	totalscoretext = "Total Score: "+ str(totalscore)
 	b = gameScreen.displayText(jumbledword, totalscoretext)
 	pygame.time.wait(1000)
 	chk = True
+	quitevent = False
 	enteredWord = "     "
 	i=0
 	clock = pygame.time.Clock()
 	minutes = 0
 	seconds = 0
 	milliseconds = 0
-	while chk:
+	while chk and not quitevent:
 		for event in pygame.event.get():
 			if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 or event.type == pygame.QUIT:
 				if event.type == pygame.QUIT:
-					chk = False
+					quitevent = True
 				else:
 					pos = pygame.mouse.get_pos()
 					value = gameScreen.detectMouseClick(enteredWord,i,jumbledword,pos,anagrammattic.checkword)
@@ -56,15 +62,21 @@ def main():
 							if value == True:
 								gameScreen.displayAnsText(enteredWord)
 								i+=1
+								
 							else:
 								enteredWord = enteredWord.replace(enteredWord[i], " ", 1)
 					else:
 						score = anagrammattic.checkcorrectness(enteredWord)
 						totalscore+=score
-						totalscoretext = "Total Score: "+str(totalscore)
-						gameScreen.clearScreen(jumbledword,score, totalscoretext)
+						totalscoretext = "Score: "+str(totalscore)
+						overallscoretext = "Total Score: "+str(overallscore+score)
+						gameScreen.clearScreen(jumbledword,score, totalscoretext,overallscoretext)
 						i=0
+						if len(enteredWord.replace(" ",""))==5 and score:
+							print(enteredWord)
+							levelup=True
 						enteredWord = "     "
+						
 				else:
 					if i>0:
 						i-=1
@@ -80,10 +92,18 @@ def main():
 		if seconds >= 60:
 			minutes += 1
 			seconds -= 60
+			totalscoretext = "Total Score: "+str(overallscore)
+			gameScreen.printScore(totalscoretext,levelup)
+			pygame.time.wait(2000)
+			chk = False
 
-		gameScreen.Timer("{}:{}".format(minutes, seconds))
+		gameScreen.Timer("{}:{}".format(str(minutes).zfill(2), str(seconds).zfill(2)))
 		pygame.time.wait(1000)		
-				
-	pygame.quit()
-	sys.exit
+
+
+	if levelup and not quitevent:
+		main()
+	else:
+		pygame.quit()
+		sys.exit
 main()

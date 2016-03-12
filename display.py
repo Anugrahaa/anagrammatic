@@ -48,12 +48,12 @@ class ViewScreen(object):
 		self.clearrect.y = 250
 		self.screen.blit(self.clear,self.clearrect)
 
-		tick = pygame.image.load("./images/tick.png")
-		tick = pygame.transform.scale(tick, (100,50))
-		tickrect = tick.get_rect()
-		tickrect.x = 150
-		tickrect.y = 350
-		self.screen.blit(tick,tickrect)
+		# tick = pygame.image.load("./images/tick.png")
+		# tick = pygame.transform.scale(tick, (100,50))
+		# tickrect = tick.get_rect()
+		# tickrect.x = 150
+		# tickrect.y = 350
+		# self.screen.blit(tick,tickrect)
 
 		score = self.scorefont.render(totalscore, True, white, black)
 		scorerect = score.get_rect()
@@ -94,17 +94,16 @@ class ViewScreen(object):
 		pygame.display.flip()
 
 	def clearScreen(self, jumbledword, tick, totalscore):
-		self.screen.fill(black)
+		# self.screen.fill(black)
 		if tick!=0:
-			image = "./images/tick.png"
+			image = "./images/right.png"
 		else:
 			image = "./images/wrong.png"
-
 		shape = pygame.image.load(image)
-		shape = pygame.transform.scale(shape,(100,100))
+		shape = pygame.transform.scale(shape,(100,50))
 		shaperect = shape.get_rect()
-		shaperect.x = 100
-		shaperect.y = 100
+		shaperect.x = 150	
+		shaperect.y = 350
 		self.screen.blit(shape, shaperect)
 		pygame.display.flip()
 		pygame.time.wait(1000)
@@ -130,8 +129,29 @@ class ViewScreen(object):
 			return -1
 		return False
 
-	def ScreenClose(self):
-		for event in pygame.event.get():
-			if event.type == pygame.QUIT:
-				pygame.quit()
-				sys.exit()
+	def printScore(self, scoretext, levelup):
+		self.screen.fill(black)
+		score = self.font.render(scoretext, True, (255,200,100), black)
+		scorerect = score.get_rect()
+		scorerect.x = 50
+		scorerect.y = 100
+		self.screen.blit(score, scorerect)
+		if levelup:
+			scoretext="Next Round"
+		else:
+			scoretext="Thank You For Playing"
+		score = self.font.render(scoretext, True, (255,200,100), black)
+		scorerect = score.get_rect()
+		scorerect.x = 50
+		scorerect.y = 200
+		self.screen.blit(score, scorerect)
+		if levelup:
+			scoretext=""
+		else:
+			scoretext="Bye"
+		score = self.font.render(scoretext, True, (255,200,100), black)
+		scorerect = score.get_rect()
+		scorerect.x = 50
+		scorerect.y = 300
+		self.screen.blit(score, scorerect)
+		pygame.display.flip()
