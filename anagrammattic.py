@@ -16,7 +16,9 @@ def main():
 		jumbledword = anagrammattic.jumbleItUp()
 
 	gameScreen = ViewScreen()
-	b = gameScreen.displayText(jumbledword)
+	totalscore = 0
+	totalscoretext = "Total Score: "+ str(totalscore)
+	b = gameScreen.displayText(jumbledword, totalscoretext)
 	pygame.time.wait(1000)
 	chk = True
 	enteredWord = "     "
@@ -41,10 +43,10 @@ def main():
 							if i!=0:
 								i-=1
 								enteredWord = enteredWord.replace(enteredWord[i]," ",1)
-								gameScreen.displayText(jumbledword)
+								totalscoretext = "Total Score: "+str(totalscore)
+								gameScreen.displayText(jumbledword,totalscoretext)
 								gameScreen.displayAnsText(enteredWord)
 
-					print(pos,i)
 			if event.type == pygame.KEYDOWN:
 				if pygame.key.name(event.key)!='backspace':
 					if pygame.key.name(event.key)!='return':
@@ -53,12 +55,14 @@ def main():
 							value = anagrammattic.checkword(enteredWord)
 							if value == True:
 								gameScreen.displayAnsText(enteredWord)
-								print(enteredWord,anagrammattic.checkcorrectness(enteredWord),i)
 								i+=1
 							else:
 								enteredWord = enteredWord.replace(enteredWord[i], " ", 1)
 					else:
-						gameScreen.clearScreen(jumbledword,anagrammattic.checkcorrectness(enteredWord))
+						score = anagrammattic.checkcorrectness(enteredWord)
+						totalscore+=score
+						totalscoretext = "Total Score: "+str(totalscore)
+						gameScreen.clearScreen(jumbledword,score, totalscoretext)
 						i=0
 						enteredWord = "     "
 				else:
@@ -67,8 +71,6 @@ def main():
 						enteredWord = enteredWord.replace(enteredWord[i], " ", 1)
 						gameScreen.displayText(jumbledword)
 						gameScreen.displayAnsText(enteredWord)
-					if i!=0:
-						print(enteredWord,anagrammattic.checkcorrectness(enteredWord))
 
 
 		milliseconds += clock.tick_busy_loop(60)

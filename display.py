@@ -13,13 +13,14 @@ class ViewScreen(object):
 		self.screen = pygame.display.set_mode(self.size)
 		self.screenrect = self.screen.get_rect()	
 		self.font = pygame.font.SysFont("TimesNewRoman", 60)
+		self.scorefont = pygame.font.SysFont("TimesNewRoman", 30)
 		self.text = [self.font.render("abcde", True, white, black),self.font.render("abcde", True, white, black),self.font.render("abcde", True, white, black),self.font.render("abcde", True, white, black),self.font.render("abcde", True, white, black)]
 		self.textrect = [self.text[0].get_rect(),self.text[0].get_rect(),self.text[0].get_rect(),self.text[0].get_rect(),self.text[0].get_rect()]
 		self.anagrammatic = Anagrammattic()
 		self.clear = pygame.image.load("./images/backspace.png")
 		self.clearrect = self.clear.get_rect()
 
-	def displayText(self,jumbledword):
+	def displayText(self,jumbledword, totalscore):
 		i=0		
 		while i<len(jumbledword):
 			# self.text[i] = self.font.render(jumbledword[i], True, white, black)
@@ -54,6 +55,12 @@ class ViewScreen(object):
 		tickrect.y = 350
 		self.screen.blit(tick,tickrect)
 
+		score = self.scorefont.render(totalscore, True, white, black)
+		scorerect = score.get_rect()
+		scorerect.x = 150+(85*3)
+		scorerect.y = 25
+		self.screen.blit(score, scorerect)
+
 		pygame.display.flip()
 		return self.screen.blit(self.text[0], self.textrect[0])
 
@@ -86,9 +93,9 @@ class ViewScreen(object):
 		self.screen.blit(time, timerect)
 		pygame.display.flip()
 
-	def clearScreen(self, jumbledword,tick):
+	def clearScreen(self, jumbledword, tick, totalscore):
 		self.screen.fill(black)
-		if tick==True:
+		if tick!=0:
 			image = "./images/tick.png"
 		else:
 			image = "./images/wrong.png"
@@ -102,7 +109,7 @@ class ViewScreen(object):
 		pygame.display.flip()
 		pygame.time.wait(1000)
 		self.screen.fill(black)
-		self.displayText(jumbledword)
+		self.displayText(jumbledword, totalscore)
 
 	def detectMouseClick(self, text, i, jumbledword, pos,checkword):
 		j=0
@@ -111,10 +118,8 @@ class ViewScreen(object):
 				if self.textrect[j].collidepoint(pos):
 					text = text.replace(text[i], jumbledword[j], 1)
 					value = checkword(text)
-					print(value,j)
 					if value != False:
 						self.displayAnsText(text)
-						print(text,self.anagrammatic.checkcorrectness(text))
 						return text
 					else:
 						text = text.replace(text[i], " ", 1)

@@ -27,8 +27,6 @@ class Anagrammattic(object):
 		rightword = self.WORD
 		i=0
 		word = word.replace(" ","")
-		print(word,"l")
-		print(rightword)
 		while i<len(word):
 			j=0
 			flag=False
@@ -36,7 +34,6 @@ class Anagrammattic(object):
 				if(word[i]==rightword[j]):
 					rightword = rightword.replace(rightword[j], rightword[len(rightword)-i-1],1)
 					flag=True
-					print(rightword)
 					break
 				else:
 					flag=False
@@ -55,7 +52,6 @@ class Anagrammattic(object):
 			while i<len(word):
 				score+=self.score[word[i].upper()]
 				i+=1
-			print(score)
-		return x
+		return score
 
 
