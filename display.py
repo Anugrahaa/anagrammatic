@@ -77,7 +77,7 @@ class ViewScreen(object):
 		hint = pygame.image.load("./images/hint.png")
 		hint = pygame.transform.scale(hint,(50,50))
 		self.hintrect = hint.get_rect()
-		self.hintrect.x = 250
+		self.hintrect.x = 150+(85*2)
 		self.hintrect.y = 350
 		self.screen.blit(hint, self.hintrect)
 
@@ -151,7 +151,7 @@ class ViewScreen(object):
 			while j<5:
 				if self.textrect[j].collidepoint(pos):
 					text = text.replace(text[i], jumbledword[j], 1)
-					value = checkword(text)
+					value = checkword(text, jumbledword)
 					if value != False:
 						self.displayAnsText(text)
 						return text
