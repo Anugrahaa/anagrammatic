@@ -52,13 +52,14 @@ class Anagram(ConnectionListener):
 						player = gameScreen.playerName(name)
 
 					if x=='return':
-						self.Send({"action":"startgame", "entered": True, "num": self.num, "gameid":self.gameid})
+						self.Send({"action":"startgame","score":0, "entered": True, "num": self.num, "gameid":self.gameid, "nextlevel": False})
 						msg = gameScreen.playerName("Wait for the opponent")
 						while not self.running:
 						    self.Pump()
 						    connection.Pump()
 						    time.sleep(0.01)
 						if self.running:
+							self.running = False
 							self.main(player)
 							chk=False
 				if event.type == pygame.QUIT:
@@ -67,11 +68,23 @@ class Anagram(ConnectionListener):
 		sys.exit()
 
 	def Network_startgame(self, data):
-	    self.running=True
-	    self.num=data["player"]
-	    self.gameid=data["gameid"]
-	    self.word = self.jumbledword = data["word"]
-	    print("Game started")
+		self.running=True
+		self.num=data["player"]
+		self.gameid=data["gameid"]
+		self.word = self.jumbledword = data["word"]
+		print("Game started")
+
+	def Network_win(self, data):
+		print("you are here")
+		if data["win"]==True:
+			text = "You Won"
+		else:
+			text = "Better Luck Next Time"
+		gameScreen = ViewScreen()
+		gameScreen.FinalScreen(text, data["score"], data["oppscore"])
+		self.running=True
+		self.word = data["word"]
+
 
 	def main(self,player):
 		levelup=False
@@ -125,7 +138,7 @@ class Anagram(ConnectionListener):
 										overallscoretext = "Score: "+str(overallscore)
 										gameScreen.clearScreen(player,self.jumbledword,score, overallscoretext)
 										gameScreen.displayHint(hintword)
-										self.Send({"action":"hint","words":self.listOfWords[:self.noOfWords],"score":overallscore, "gameid":self.gameid, "num":self.num})
+										self.Send({"action":"hint","words":self.listOfWords[:self.noOfWords],"score":overallscore, "gameid":self.gameid, "num":self.num, "nextlevel":False})
 
 
 
@@ -153,7 +166,7 @@ class Anagram(ConnectionListener):
 							if score:
 								self.listOfWords[self.noOfWords] = enteredWord.replace(" ","")
 								self.noOfWords+=1
-								self.Send({"action": "formword", "words": self.listOfWords[:self.noOfWords],"score":overallscore, "gameid":self.gameid, "num":self.num})
+								self.Send({"action": "formword", "words": self.listOfWords[:self.noOfWords],"score":overallscore, "gameid":self.gameid, "num":self.num, "nextlevel":False})
 								if len(enteredWord.replace(" ",""))==5:
 									print(enteredWord)
 									levelup=True
@@ -183,9 +196,16 @@ class Anagram(ConnectionListener):
 
 			gameScreen.Timer("{}:{}".format(str(minutes).zfill(2), str(seconds).zfill(2)))
 			pygame.time.wait(1000)		
-
-
+		
+		self.Send({"action":"done","score":overallscore,"num":self.num, "gameid":self.gameid, "nextlevel": True})
+		
+		while not self.running:
+				time.sleep(0.01)
+				connection.Pump()
+				self.Pump()
+		pygame.time.wait(1000)
 		if levelup and not quitevent:
+			print("Reached")
 			self.main(player)
 		else:
 			return

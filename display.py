@@ -192,3 +192,21 @@ class ViewScreen(object):
 		scorerect.y = 300
 		self.screen.blit(score, scorerect)
 		pygame.display.flip()
+
+	def FinalScreen(self, text, score, oppscore):
+		text = self.font.render(text,True,white,black)
+		self.screen.blit(text, (100,100))
+
+		text = self.scorefont.render("Your score",True,white,black)
+		self.screen.blit(text, (100,200))
+
+		text = self.scorefont.render("Opp score", True, white, black)
+		self.screen.blit(text, (450,200))
+
+		text = self.font.render(str(score), True, white, black)
+		self.screen.blit(text, (100,300))
+
+		text = self.font.render(str(oppscore), True, white, black)
+		self.screen.blit(text, (450,300))
+
+		pygame.display.flip()
